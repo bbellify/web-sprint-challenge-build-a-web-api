@@ -22,9 +22,9 @@ function validateNewAction(req, res, next) {
         Action.get(project_id)
         .then( proj => { //eslint-disable-line no-unused-vars
              if (!description || description.length > 128 ) {
-                res.status(400).json({ message: 'description field required, must be 128 chars or less' })
+                next({ status: 400, message: 'description field required, must be 128 chars or less' })
             } else if (!notes) {
-                res.status(400).json({ message: 'notes field required'})
+                next({ status: 400, message: 'notes field required' })
             } else {
                 next()
             }

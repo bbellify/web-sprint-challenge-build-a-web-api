@@ -44,8 +44,12 @@ router.put('/:id', validateId, (req, res, next) => {
 
 router.delete('/:id', validateId, (req, res, next) => {
     Action.remove(req.params.id)
-        .then(res => {
-            res.status(204)
+        .then(isDel => {
+            if (!isDel) {
+                next({ status: 400, message: 'error deleting'})
+            } else {
+                res.sendStatus(204)
+            }
         })
         .catch(next)
 })

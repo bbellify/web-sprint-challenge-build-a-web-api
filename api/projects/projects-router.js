@@ -45,8 +45,14 @@ router.put('/:id', validateId, (req, res, next) => {
 
 router.delete('/:id', validateId, (req, res, next) => {
     Project.remove(req.params.id)
-        .then(res => {
-            res.status(204)
+        .then(isDel => { //eslint-disable-line
+            if (!isDel) {
+                next({ error: 400, message: 'error deleting'})
+            } else {
+                console.log('here')
+                console.log(isDel)
+                res.sendStatus(204)
+            }
         })
         .catch(next)
 })

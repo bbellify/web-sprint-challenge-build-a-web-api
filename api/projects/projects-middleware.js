@@ -5,7 +5,7 @@ async function validateId(req, res, next) {
     Project.get(req.params.id)
         .then(p => {
             if (!p) {
-                res.status(404).json({ message: 'nothing found'})
+                next({ status: 404, message: 'nothing found' })
             } else {
                 next()
             }
@@ -16,7 +16,7 @@ async function validateId(req, res, next) {
 function validateNewPost(req, res, next) {
     const { name, description } = req.body
     if (!name || !description ) {
-        res.status(400).json({ message: 'name and description are required'})
+        next({ status: 400, message: 'name and description are required' })
     } else {
         next()
     }
