@@ -2,20 +2,18 @@
 const Project = require('./projects-model')
 
 async function validateId(req, res, next) {
-    const { id } = req.params
-    Project.get(id)
+    Project.get(req.params.id)
         .then(p => {
             if (!p) {
                 res.status(404).json({ message: 'nothing found'})
             } else {
-                req.body.project = p
                 next()
             }
         })
         .catch(next)
 }
 
-function validatePayload(req, res, next) {
+function validateNewPost(req, res, next) {
     const { name, description } = req.body
     if (!name || !description ) {
         res.status(400).json({ message: 'name and description are required'})
@@ -35,6 +33,6 @@ function errorHandling(err, req, res, next) {
 
 module.exports = {
     validateId,
-    validatePayload,
+    validateNewPost,
     errorHandling,
 }

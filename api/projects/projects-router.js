@@ -3,10 +3,9 @@ const express = require('express')
 const Project = require('./projects-model')
 const {
     validateId,
-    validatePayload,
+    validateNewPost,
     errorHandling,
 } = require('./projects-middleware')
-const { projectToBody } = require('../../data/helpers/mappers')
 
 const router = express.Router()
 
@@ -19,19 +18,15 @@ router.get('/', (req, res, next) => {
         .catch(next)
 })
 
-router.get('/:id', validateId, (req, res) => {
-    res.json(req.body.project)
-
-    // alternate code - before validateId middleware inserted
-    // const { id } = req.params
-    // Project.get(id)
-    //     .then(p => {
-    //         !p ? res.status(404).json({ message: 'not found'}) : res.json(p)
-    //     })
-    //     .catch(next)
+router.get('/:id', validateId, (req, res, next) => {
+    Project.get(req.params.id)
+        .then(proj => {
+            res.json(proj)
+        })
+        .catch(next)
 })
 
-router.post('/', validatePayload, (req, res, next) => {
+router.post('/', validateNewPost, (req, res, next) => {
     Project.insert(req.body)
         .then(project => {
             res.json(project)
@@ -39,16 +34,13 @@ router.post('/', validatePayload, (req, res, next) => {
         .catch(next)
 })
 
-router.put('/:id', validateId, validatePayload, (req, res, next) => {
-    const updates = { name: req.body.name, description: req.body.description }
-    Project.update(req.params.id, updates)
+router.put('/:id', validateId, (req, res, next) => {
+    
+    Project.update(req.params.id, req.body)
         .then(update => {
             res.status(201).json(update)
         })
-        .catch(err => {
-            console.log('here')
-            next(err)
-        })
+        .catch(next)
 })
 
 router.delete('/:id', validateId, (req, res, next) => {
