@@ -17,7 +17,7 @@ function validateNewAction(req, res, next) {
     const { notes, description, project_id } = req.body
     
     if (!project_id) {
-        res.status(400).json({ message: 'please include a project id'})
+        next({ status: 400, message: 'please include project id' }) 
     } else {
         Action.get(project_id)
         .then( proj => { //eslint-disable-line no-unused-vars
@@ -30,7 +30,7 @@ function validateNewAction(req, res, next) {
             }
         })
         .catch(err => {
-            res.status(404).json({ message: err.message })
+            next({ status: 404, message: err.message })
         })    
     }
 }
