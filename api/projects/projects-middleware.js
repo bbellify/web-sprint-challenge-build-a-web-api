@@ -15,7 +15,7 @@ async function validateId(req, res, next) {
         .catch(next)
 }
 
-function validateNewProject(req, res, next) {
+function validatePayload(req, res, next) {
     const { name, description } = req.body
     if (!name || !description ) {
         res.status(400).json({ message: 'name and description are required'})
@@ -35,6 +35,6 @@ function errorHandling(err, req, res, next) {
 
 module.exports = {
     validateId,
-    validateNewProject,
+    validatePayload,
     errorHandling,
 }

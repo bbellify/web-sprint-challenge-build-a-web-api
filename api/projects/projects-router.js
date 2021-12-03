@@ -3,7 +3,7 @@ const express = require('express')
 const Project = require('./projects-model')
 const {
     validateId,
-    validateNewProject,
+    validatePayload,
     errorHandling,
 } = require('./projects-middleware')
 
@@ -22,7 +22,6 @@ router.get('/:id', validateId, (req, res) => {
     res.json(req.body.project)
 
     // alternate code - before validateId middleware inserted
-
     // const { id } = req.params
     // Project.get(id)
     //     .then(p => {
@@ -31,7 +30,7 @@ router.get('/:id', validateId, (req, res) => {
     //     .catch(next)
 })
 
-router.post('/', validateNewProject, (req, res, next) => {
+router.post('/', validatePayload, (req, res, next) => {
     Project.insert(req.body)
         .then(project => {
             res.json(project)
@@ -39,7 +38,13 @@ router.post('/', validateNewProject, (req, res, next) => {
         .catch(next)
 })
 
-router.put('/:id')
+router.put('/:id', validateId, validatePayload, (req, res, next) => {
+    Project.update(req.params.id, req.body)
+        .then(update => {
+            res.status(201).json(update)
+        })
+        .catch(next)
+})
 
 router.use(errorHandling)
 
