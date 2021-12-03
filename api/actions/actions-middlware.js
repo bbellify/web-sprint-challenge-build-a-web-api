@@ -5,7 +5,7 @@ async function validateId(req, res, next) {
     Action.get(req.params.id)
         .then(p => {
             if (!p) {
-                res.status(404).json({ message: 'nothing found'})
+                res.status(404).json({ message: 'action not found'})
             } else {
                 next()
             }
@@ -21,9 +21,7 @@ function validateNewAction(req, res, next) {
     } else {
         Action.get(project_id)
         .then( proj => { //eslint-disable-line no-unused-vars
-             if (!description 
-                // || description.length() > 128 
-                ) {
+             if (!description || description.length > 128 ) {
                 res.status(400).json({ message: 'description field required, must be 128 chars or less' })
             } else if (!notes) {
                 res.status(400).json({ message: 'notes field required'})
@@ -34,6 +32,14 @@ function validateNewAction(req, res, next) {
         .catch(err => {
             res.status(404).json({ message: err.message })
         })    
+    }
+}
+
+function validateActionEdit (req, res, next) {
+    const { notes, description, completed, project_id } = req.body
+
+    if ( !notes || !description || !completed || !project_id ) {
+        next({ status: 400, message: 'required fields missing' })
     }
 }
 
@@ -48,5 +54,6 @@ function errorHandling(err, req, res, next) {
 module.exports = {
     validateId,
     validateNewAction,
+    validateActionEdit,
     errorHandling,
 }
