@@ -1,5 +1,19 @@
 // add middlewares here related to projects
+const Project = require('./projects-model')
 
+async function validateId(req, res, next) {
+    const { id } = req.params
+    Project.get(id)
+        .then(p => {
+            if (!p) {
+                res.status(404).json({ message: 'nothing found'})
+            } else {
+                req.body.project = p
+                next()
+            }
+        })
+        .catch(next)
+}
 
 function validateNewProject(req, res, next) {
     const { name, description } = req.body
@@ -20,7 +34,7 @@ function errorHandling(err, req, res, next) {
 
 
 module.exports = {
+    validateId,
     validateNewProject,
     errorHandling,
-    
 }

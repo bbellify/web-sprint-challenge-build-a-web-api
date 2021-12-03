@@ -2,6 +2,7 @@
 const express = require('express')
 const Project = require('./projects-model')
 const {
+    validateId,
     validateNewProject,
     errorHandling,
 } = require('./projects-middleware')
@@ -17,13 +18,17 @@ router.get('/', (req, res, next) => {
         .catch(next)
 })
 
-router.get('/:id', (req, res, next) => {
-    const { id } = req.params
-    Project.get(id)
-        .then(p => {
-            !p ? res.status(404).json({ message: 'not found'}) : res.json(p)
-        })
-        .catch(next)
+router.get('/:id', validateId, (req, res) => {
+    res.json(req.body.project)
+
+    // alternate code - before validateId middleware inserted
+
+    // const { id } = req.params
+    // Project.get(id)
+    //     .then(p => {
+    //         !p ? res.status(404).json({ message: 'not found'}) : res.json(p)
+    //     })
+    //     .catch(next)
 })
 
 router.post('/', validateNewProject, (req, res, next) => {
@@ -33,6 +38,8 @@ router.post('/', validateNewProject, (req, res, next) => {
         })
         .catch(next)
 })
+
+router.put('/:id')
 
 router.use(errorHandling)
 
