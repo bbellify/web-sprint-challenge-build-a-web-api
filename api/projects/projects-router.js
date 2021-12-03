@@ -16,6 +16,15 @@ router.get('/', (req, res, next) => {
         .catch(next)
 })
 
+router.get('/:id', (req, res, next) => {
+    const { id } = req.params
+    Project.get(id)
+        .then(p => {
+            !p ? res.status(404).json({ message: 'not found'}) : res.json(p)
+        })
+        .catch(next)
+})
+
 router.use(errorHandling)
 
 module.exports = router
