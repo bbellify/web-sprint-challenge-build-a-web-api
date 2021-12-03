@@ -39,9 +39,21 @@ router.post('/', validatePayload, (req, res, next) => {
 })
 
 router.put('/:id', validateId, validatePayload, (req, res, next) => {
-    Project.update(req.params.id, req.body)
+    const updates = { name: req.body.name, description: req.body.description }
+    Project.update(req.params.id, updates)
         .then(update => {
             res.status(201).json(update)
+        })
+        .catch(err => {
+            console.log('here')
+            next(err)
+        })
+})
+
+router.delete('/:id', validateId, (req, res, next) => {
+    Project.remove(req.params.id)
+        .then(res => {
+            res.status(204)
         })
         .catch(next)
 })
