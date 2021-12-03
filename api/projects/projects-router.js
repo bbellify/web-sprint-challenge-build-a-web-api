@@ -4,6 +4,7 @@ const Project = require('./projects-model')
 const {
     validateId,
     validateNewPost,
+    validateUpdateProject,
     errorHandling,
 } = require('./projects-middleware')
 
@@ -18,12 +19,8 @@ router.get('/', (req, res, next) => {
         .catch(next)
 })
 
-router.get('/:id', validateId, (req, res, next) => {
-    Project.get(req.params.id)
-        .then(proj => {
-            res.json(proj)
-        })
-        .catch(next)
+router.get('/:id', validateId, (req, res) => {
+    res.json(req.proj)
 })
 
 router.post('/', validateNewPost, (req, res, next) => {
@@ -34,8 +31,7 @@ router.post('/', validateNewPost, (req, res, next) => {
         .catch(next)
 })
 
-router.put('/:id', validateId, (req, res, next) => {
-    
+router.put('/:id', validateId, validateUpdateProject, (req, res, next) => {
     Project.update(req.params.id, req.body)
         .then(update => {
             res.status(201).json(update)
@@ -49,8 +45,6 @@ router.delete('/:id', validateId, (req, res, next) => {
             if (!isDel) {
                 next({ error: 400, message: 'error deleting'})
             } else {
-                console.log('here')
-                console.log(isDel)
                 res.sendStatus(204)
             }
         })

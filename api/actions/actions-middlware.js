@@ -3,10 +3,11 @@ const Action = require('./actions-model')
 
 async function validateId(req, res, next) {
     Action.get(req.params.id)
-        .then(p => {
-            if (!p) {
+        .then(a => {
+            if (!a) {
                 res.status(404).json({ message: 'action not found'})
             } else {
+                req.act = a
                 next()
             }
         })
@@ -35,17 +36,9 @@ function validateNewAction(req, res, next) {
     }
 }
 
-function validateActionEdit (req, res, next) {
-    const { notes, description, completed, project_id } = req.body
-
-    if ( !notes || !description || !completed || !project_id ) {
-        next({ status: 400, message: 'required fields missing' })
-    }
-}
-
 // eslint-disable-next-line no-unused-vars
 function errorHandling(err, req, res, next) { 
-    res.status(err.status || 500).json({
+    res.status(err.status || 400).json({
         message: `${err.message}`,
         stack: err.stack
     })
@@ -54,6 +47,5 @@ function errorHandling(err, req, res, next) {
 module.exports = {
     validateId,
     validateNewAction,
-    validateActionEdit,
     errorHandling,
 }

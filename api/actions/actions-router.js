@@ -4,7 +4,6 @@ const Action = require('./actions-model')
 const {
     validateId,
     validateNewAction,
-    validateActionEdit,
     errorHandling,
 } = require('./actions-middlware')
 
@@ -18,12 +17,8 @@ router.get('/', (req, res, next) => {
         .catch(next)
 })
 
-router.get('/:id', validateId, (req, res, next) => {
-    Action.get(req.params.id)
-        .then(action => {
-            res.json(action)
-        })
-        .catch(next)
+router.get('/:id', validateId, (req, res) => {
+    res.json(req.act)
 })
 
 router.post('/', validateNewAction, (req, res, next) => {
@@ -37,6 +32,7 @@ router.post('/', validateNewAction, (req, res, next) => {
 router.put('/:id', validateId, (req, res, next) => {
     Action.update(req.params.id, req.body)
         .then(update => {
+            console.log(update)
             res.status(201).json(update)
         })
         .catch(next)
