@@ -15,8 +15,8 @@ async function validateId(req, res, next) {
 }
 
 function validateNewPost(req, res, next) {
-    const { name, description, completed } = req.body
-    if (!name || !description || !completed ) {
+    const { name, description } = req.body
+    if (!name || !description ) {
         next({ status: 400, message: 'name and description are required' })
     } else {
         next()
@@ -24,8 +24,8 @@ function validateNewPost(req, res, next) {
 }
 
 function validateUpdateProject(req, res, next) {
-    const { name, description } = req.body
-    if( !name || !description ) {
+    const { name, description, completed } = req.body
+    if( !name || !description || typeof completed !== 'boolean' ) {
         next({ status: 400, message: 'required fields missing' })
     } else {
         next()

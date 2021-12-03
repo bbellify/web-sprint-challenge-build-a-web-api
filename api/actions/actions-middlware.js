@@ -36,6 +36,15 @@ function validateNewAction(req, res, next) {
     }
 }
 
+function validateUpdateAction(req, res, next) {
+    const { notes, description, project_id, completed } = req.body
+    if ( !notes || !description || !project_id || typeof completed !== 'boolean' ) {
+        next({ status: 400, message: 'required fields missing' })
+    } else {
+        next()
+    }
+}
+
 // eslint-disable-next-line no-unused-vars
 function errorHandling(err, req, res, next) { 
     res.status(err.status || 400).json({
@@ -47,5 +56,6 @@ function errorHandling(err, req, res, next) {
 module.exports = {
     validateId,
     validateNewAction,
+    validateUpdateAction,
     errorHandling,
 }

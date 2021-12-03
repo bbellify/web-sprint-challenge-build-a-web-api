@@ -4,6 +4,7 @@ const Action = require('./actions-model')
 const {
     validateId,
     validateNewAction,
+    validateUpdateAction,
     errorHandling,
 } = require('./actions-middlware')
 
@@ -29,7 +30,7 @@ router.post('/', validateNewAction, (req, res, next) => {
         .catch(next)
 })
 
-router.put('/:id', validateId, (req, res, next) => {
+router.put('/:id', validateId, validateUpdateAction, (req, res, next) => {
     Action.update(req.params.id, req.body)
         .then(update => {
             console.log(update)
